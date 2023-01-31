@@ -7,6 +7,31 @@ import models
 
 
 class BaseModel:
+    def __init__(self, *args, **kwargs):
+        """initialize attributes
+        Args:
+            args (int): arguments to send a non-keyworded variable
+                length argument list to the function
+            kwargs (dict): keyworded variable length of arguments
+        """
+        if kwargs is not None and len(kwargs) != 0:
+            for key in kwargs:
+                if key == "id":
+                    self.id = kwargs[key]
+                elif key == "created_at":
+                    self.created_at = datetime.strptime(kwargs[key],
+                                                        "%Y-%m-%dT%H:%M:%S.%f")
+                elif key == "updated_at":
+                    self.updated_at = datetime.strptime(kwargs[key],
+                                                        "%Y-%m-%dT%H:%M:%S.%f")
+                else:
+                    if key != "__class__":
+                        setattr(self, key, kwargs[key])
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = self.updated_at = datetime.now()
+            models.storage.new(self)
+
     def __str__(self):
         """creates formatted string
         """
