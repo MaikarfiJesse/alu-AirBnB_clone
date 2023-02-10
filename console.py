@@ -15,11 +15,12 @@ class HBNBCommand(cmd.Cmd):
     class_list = ["BaseModel", "User", "Place", "State",
                   "City", "Amenity", "Review"]
 
-     def do_quit(self, args):
+    def do_quit(self, args):
         """Quit command to exit the console"""
         return True
 
     def do_EOF(self, args):
+        """EOF command to exit the console"""
         """EOF command to exit the console"""
         return True
 
@@ -43,7 +44,7 @@ class HBNBCommand(cmd.Cmd):
             print("* class name missing *")
         elif args[0] not in HBNBCommand.class_list:
             print("* class doesn't exist *")
-        elif len(args) < 6:
+            elif len(args) < 6:
             print("* instance id missing *")
         else:
             key = args[0] + "." + args[1]
