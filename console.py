@@ -8,6 +8,7 @@ import cmd
 import models
 import json
 
+
 class HBNBCommand(cmd.Cmd):
     """Command line interpreter for HBNB"""
     prompt = "(hbnb) "
