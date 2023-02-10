@@ -3,6 +3,7 @@
 The module console
 """
 
+
 import cmd
 import models
 import json
