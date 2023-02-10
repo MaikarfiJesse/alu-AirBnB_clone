@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-#a class BaseModel that defines common attributes/methods
-from werkzeug.datastructures import FileStorage
+"""This module initializes the FileStorage instance for the application."""
+from file_storage import FileStorage
 storage = FileStorage()
 storage.reload()
