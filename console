@@ -81,3 +81,4 @@ class HBNBCommand(cmd.Cmd):
             objects = [str(v) for k, v in models.storage.all().items()
                        if k.startswith(args + ".")]
             print(objects)
+
