@@ -1,65 +1,74 @@
 #!/usr/bin/python3
-"""Creating th e class BaseModel"""
-import datetime
 import uuid
-import json
+from datetime import datetime
 import models
 
 
 class BaseModel:
-    def __init__(self, *args, **kwargs):
-        """initialize attributes
-        Args:
-            args (int): arguments to send a non-keyworded variable
-                length argument list to the function
-            kwargs (dict): keyworded variable length of arguments
+    """
+   In order to create, update, and convert objects to dictionaries, BaseModel,
+   a fundamental model class, offers common functionality.
+
+    id (str): A distinctive identifier for each class instance
+        produced automatically using the uuid library.
+    created at (datetime): Timestamp indicating the creation time of the object.
+    updated at (datetime): Timestamp for the most recent update to the object.
+    """
+    def _init_(self, *args, **kwargs):
         """
-        if kwargs is not None and len(kwargs) != 0:
-            for key in kwargs:
-                if key == "id":
-                    self.id = kwargs[key]
-                elif key == "created_at":
-                    self.created_at = datetime.strptime(kwargs[key],
-                                                        "%Y-%m-%dT%H:%M:%S.%f")
-                elif key == "updated_at":
-                    self.updated_at = datetime.strptime(kwargs[key],
-                                                        "%Y-%m-%dT%H:%M:%S.%f")
-                else:
-                    if key != "__class__":
-                        setattr(self, key, kwargs[key])
+       creates a base model object. The associated characteristics are set
+           if keyword arguments are provided.
+       The 'id', 'created at', and 'updated at' properties are automatically
+       set if no keyword parameters are given.
+
+        Args:
+            *args: Variable length argument list. Not used in this method.
+            **kwargs: Arbitrary keyword arguments.
+        """
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != '_class_':
+                    setattr(self, key, value)
+            if 'created_at' in kwargs:
+                self.created_at = datetime.strptime(kwargs['created_at'],
+                                                    '%Y-%m-%dT%H:%M:%S.%f')
+            if 'updated_at' in kwargs:
+                self.updated_at = datetime.strptime(kwargs['updated_at'],
+                                                    '%Y-%m-%dT%H:%M:%S.%f')
         else:
             self.id = str(uuid.uuid4())
-            self.created_at = self.updated_at = datetime.now()
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
             models.storage.new(self)
 
-    def __str__(self):
-        """creates formatted string
+    def _str_(self):
         """
-        return "[{}] ({}) {}".format(type(self).__name__, self.id,
-                                     self.__dict__)
+        Returns a string representation of the object in the following format:
+        [<class_name>] (<self.id>) <self._dict_>
+
+        Returns:
+            str: String representation of the object.
+        """
+        return "[{}] ({}) {}".format(type(self)._name, self.id, self.dict_)
 
     def save(self):
-        """updates public instance attribute
-        updated_at with current datetime"""
+        """
+        Updates the `updated_at` attribute with the current datetime.
+        """
         self.updated_at = datetime.now()
         models.storage.save()
 
     def to_dict(self):
-        """creates a dictionary containing all keys/values of
-            __dict__ of the instance
-        Returns:
-            dictionary containing all key/values of __dict__ of instance
         """
-        a_dict = dict(self.__dict__)
-#        a_dict = self.__dict__
-#        a_dict = {}
-#        a_dict.update(self.__dict__)
-        for key in a_dict:
-            if key == "id":
-                a_dict[key] = self.id
-            elif key == "created_at":
-                a_dict[key] = self.created_at.isoformat()
-            elif key == "updated_at":
-                a_dict[key] = self.updated_at.isoformat()
-        a_dict["__class__"] = type(self).__name__
-        return a_dict
+        Converts the object to a dictionary. The dictionary keys are the object
+        attributes, and the values are the attribute values. Additionally,
+        the 'created_at' and 'updated_at' values are converted to ISO format.
+
+        Returns:
+            dict: Dictionary representation of the object.
+        """
+        obj_dict = self._dict_.copy()
+        obj_dict['created_at'] = self.created_at.isoformat()
+        obj_dict['updated_at'] = self.updated_at.isoformat()
+        obj_dict['_class'] = type(self).name_
+        return obj_dict
